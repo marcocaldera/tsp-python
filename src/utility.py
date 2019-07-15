@@ -18,7 +18,7 @@ class Utility:
                 nodes.append([float(row[1]), float(row[2])])
 
             # TODO Scommentare per ridurre la dimensione del problema
-            # nodes = nodes[:10]
+            # nodes = nodes[:258]
 
             # Creiamo una matrice n x n con n numero di nodi
             matrix = [
@@ -37,8 +37,8 @@ class Utility:
                     b = numpy.array(node)
                     # Distanza euclidea
                     eu_distances = numpy.linalg.norm(a - b)
-                    # Inserisco la distanza euclidea nella matrice
-                    item[column] = int(eu_distances)
+                    # Inserisco la distanza euclidea nella matrice o infinito se siamo sulla diagonale principale
+                    item[column] = int(eu_distances) if int(eu_distances) > 0 else sys.maxsize
 
             # self.print_matrix(matrix)
             # print matrix[0]
