@@ -4,9 +4,9 @@ import sys
 
 
 class Tsp:
-    # problem_name = 'berlin52'
+    problem_name = 'berlin52'
     # problem_name = 'a280'
-    problem_name = 'pr1002'
+    # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
@@ -21,7 +21,7 @@ class Tsp:
         Utility.print_matrix(matrix)
         # print matrix[0]
 
-        print 100 * "-"
+        print(100 * "-")
 
         # Funzione obiettivo
         solution = 0
@@ -63,12 +63,12 @@ class Tsp:
                 visited_node.append(current_node)
                 current_node = min_index
 
-        print solution
-        print visited_node
+        print(solution)
+        print(visited_node)
 
 
 if __name__ == '__main__':
     start = time.time()
     Tsp()
     print('-' * 50)
-    print 'Execution time:', round(time.time() - start, 2), 'seconds'
+    print('Execution time:', round(time.time() - start, 2), 'seconds')
