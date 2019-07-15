@@ -21,7 +21,7 @@ class Tsp:
         with open(self.tsp_path) as csvfile:
             reader = csv.reader(csvfile, quoting=csv.QUOTE_ALL)
             nodes = []
-            # Creiamo l'array un array di nodi, contenente per ogni nodo le relative coordinate
+            # Creiamo un array di node, contenente per ogni nodo le relative coordinate (x,y)
             for row in reader:
                 # nodes.append([float(row[0]), float(row[1]), float(row[2])])
                 nodes.append([float(row[1]), float(row[2])])
@@ -40,7 +40,7 @@ class Tsp:
                 # Prelevo le coordinate del nodo relativo alla riga e le trasformo in un array numpy
                 a = numpy.array(nodes[row])
 
-                # Calcolo la distanza dal nodo a a tutti gli altri nodi
+                # Calcolo la distanza dal node a a tutti gli altri node
                 for column, node in enumerate(nodes):
                     # Uso le coordinate di un node e le trasformo in un array numpy
                     b = numpy.array(node)
