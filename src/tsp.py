@@ -23,9 +23,10 @@ class Tsp:
             nodes = []
             # Creiamo l'array un array di nodi, contenente per ogni nodo le relative coordinate
             for row in reader:
-                nodes.append([float(row[0]), float(row[1]), float(row[2])])
+                # nodes.append([float(row[0]), float(row[1]), float(row[2])])
+                nodes.append([float(row[1]), float(row[2])])
 
-            # TODO Scommentare per ridurre la complessita del problema
+            # TODO Scommentare per ridurre la dimensione del problema
             # nodes = nodes[:10]
 
             # Creiamo una matrice n x n con n numero di nodi
@@ -36,18 +37,16 @@ class Tsp:
             # Per ogni riga della matrice
             for row, item in enumerate(matrix):
 
-                # Prelevo le coordinate del nodo relativo alla riga
-                row_node_coordinates = nodes[row][1:]
-                a = numpy.array((row_node_coordinates[0], row_node_coordinates[1]))
+                # Prelevo le coordinate del nodo relativo alla riga e le trasformo in un array numpy
+                a = numpy.array(nodes[row])
 
                 # Calcolo la distanza dal nodo a a tutti gli altri nodi
                 for column, node in enumerate(nodes):
-                    node_coordinates = node[1:]
-
-                    b = numpy.array((node_coordinates[0], node_coordinates[1]))
-
+                    # Uso le coordinate di un node e le trasformo in un array numpy
+                    b = numpy.array(node)
                     # Distanza euclidea
                     eu_distances = numpy.linalg.norm(a - b)
+                    # Inserisco la distanza euclidea nella matrice
                     item[column] = int(eu_distances)
 
             self.print_matrix(matrix)
