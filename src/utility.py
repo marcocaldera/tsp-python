@@ -18,7 +18,7 @@ class Utility:
                 nodes.append([float(row[1]), float(row[2])])
 
             # TODO Scommentare per ridurre la dimensione del problema
-            # nodes = nodes[:4]
+            # nodes = nodes[:6]
 
             # Creiamo una matrice n x n con n numero di nodi
             matrix = np.array([

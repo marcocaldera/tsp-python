@@ -8,13 +8,17 @@ from copy import copy, deepcopy
 class Tsp:
     # problem_name = 'berlin52'
     # problem_name = 'a280'
-    problem_name = 'pr1002'
+    # problem_name = 'pr1002'
+
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
     # problem_name = 'st70'
     # problem_name = 'bier127'
     # problem_name = 'ch130'
+
+    # TODO STAMPARE GRAFO
+    # https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro
 
     def __init__(self):
         # Creo la matrice che rappresenta il problema
@@ -24,8 +28,13 @@ class Tsp:
         # Costruisco la soluzione iniziale
         route = self.initial_solution(deepcopy(self.matrix))
 
-        # print route
-        print(self.cost(route))
+        # Percorso e costo iniziale
+        print(route, self.cost(route))
+
+        # print(self.test_two_opt_neighborhood(route))
+
+        # Percorso e costo dopo 2-opt
+        print(self.two_opt_neighborhood(route))
 
     def cost(self, route):
         """
@@ -42,6 +51,68 @@ class Tsp:
         :return:
         """
         return self.matrix[np.roll(route, 1), route].sum()
+
+    def two_opt_neighborhood(self, route):
+        """
+        Intorno 2-opt
+        :return:
+        """
+
+        best_route = route
+        best_cost = self.cost(route)
+
+        # Aggiungo il nodo di start al fondo della lista
+        # route.append(route[0]) # TODO non e detto serva
+
+        # Numero di volte in qui e stato calcolato l'intorno
+        count = 0
+
+        # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
+        improved = True
+        while improved:
+            count += 1
+            improved = False
+            for i in range(0, len(route)):
+                for j in range(i + 2, len(route) - 1):
+
+                    # print (route[i], route[i + 1]), (route[j], route[j + 1])
+
+                    reverse = route[i + 1:j + 2]
+                    new_route = route[:i + 1] + reverse[::-1] + route[j + 2:]
+                    # print new_route[:len(new_route) - 1]
+                    # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo
+                    new_route_cost = self.cost(new_route[:len(new_route) - 1])
+                    # print new_route_cost
+
+                    if new_route_cost < best_cost:
+                        best_route = new_route
+                        best_cost = new_route_cost
+                        improved = True
+
+            route = best_route
+
+        print("Numero di iterazioni: ", count)
+        return route, best_cost
+
+    @staticmethod
+    def test_two_opt_neighborhood(route):
+        """
+        Intorno 2-opt
+        :return:
+        """
+
+        # TODO Ho bisogno dell'1 al fondo
+        route = [1, 2, 3, 4, 5, 6]
+        # route = [1, 2, 3, 4]
+        # route = [1, 2, 3, 4, 5, 6]
+        print route
+
+        for i in range(0, len(route)):
+            for j in range(i + 2, len(route) - 1):
+                print (route[i], route[i + 1]), (route[j], route[j + 1])
+                reverse = route[i + 1:j + 2]
+                # print reverse
+                print route[:i + 1] + reverse[::-1] + route[j + 2:]
 
     @staticmethod
     def initial_solution(matrix):
@@ -91,7 +162,7 @@ class Tsp:
                 visited_node.append(current_node)
                 current_node = min_index
 
-        print(solution)
+        # print(solution)
         # print(visited_node)
 
         return visited_node
