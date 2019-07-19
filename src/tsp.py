@@ -1,12 +1,14 @@
 from utility import Utility
 import time
 import sys
+import numpy as np
+from copy import copy, deepcopy
 
 
 class Tsp:
-    problem_name = 'berlin52'
+    # problem_name = 'berlin52'
     # problem_name = 'a280'
-    # problem_name = 'pr1002'
+    problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
@@ -16,13 +18,38 @@ class Tsp:
 
     def __init__(self):
         # Creo la matrice che rappresenta il problema
-        matrix = Utility().create_matrix(self.problem_name)
+        self.matrix = Utility().create_matrix(self.problem_name)
+        # Utility.print_matrix(self.matrix)
 
-        Utility.print_matrix(matrix)
-        # print matrix[0]
+        # Costruisco la soluzione iniziale
+        route = self.initial_solution(deepcopy(self.matrix))
 
-        print(100 * "-")
+        # print route
+        print(self.cost(route))
 
+    def cost(self, route):
+        """
+        Somma i valori contenuti negli elementi selezionati nella matrice
+
+        ES. matrix[[0, 1], [2, 3]]
+        Restituisce il contenuto della cella [0,1] e il contenuto della cella [2,3] che con .sum() vengono sommati
+
+        In questo modo se ho una route [0,2,3], grazie ad np.roll
+        vado a sommare gli elementi nella matrice in [[3,0,2][0,2,3]].sum()
+
+        :param matrix:
+        :param route:
+        :return:
+        """
+        return self.matrix[np.roll(route, 1), route].sum()
+
+    @staticmethod
+    def initial_solution(matrix):
+        """
+        Soluzione iniziale di tipo: Nearest Neighbor
+        :param matrix:
+        :return:
+        """
         # Funzione obiettivo
         solution = 0
 
@@ -49,13 +76,14 @@ class Tsp:
             if len(matrix) - 1 == len(visited_node):
                 solution += matrix[start_node][current_node]
                 visited_node.append(current_node)  # Aggiungo l'ultimo nodo
-                visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
+                # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
             else:
                 # Prelevo il valore piu piccolo della riga
                 min_value = min(row)
 
                 # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
-                min_index = matrix[current_node].index(min_value)
+                # min_index = matrix[current_node].index(min_value)
+                min_index = np.where(matrix[current_node] == min_value)[0][0]
 
                 solution += min_value
 
@@ -64,7 +92,9 @@ class Tsp:
                 current_node = min_index
 
         print(solution)
-        print(visited_node)
+        # print(visited_node)
+
+        return visited_node
 
 
 if __name__ == '__main__':

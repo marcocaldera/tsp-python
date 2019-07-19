@@ -1,5 +1,5 @@
 import csv
-import numpy
+import numpy as np
 import sys
 import time
 
@@ -18,25 +18,25 @@ class Utility:
                 nodes.append([float(row[1]), float(row[2])])
 
             # TODO Scommentare per ridurre la dimensione del problema
-            # nodes = nodes[:258]
+            # nodes = nodes[:4]
 
             # Creiamo una matrice n x n con n numero di nodi
-            matrix = [
+            matrix = np.array([
                 [0 for i in range(len(nodes))] for j in range(len(nodes))
-            ]
+            ])
 
             # Per ogni riga della matrice
             for row, item in enumerate(matrix):
 
                 # Prelevo le coordinate del nodo relativo alla riga e le trasformo in un array numpy
-                a = numpy.array(nodes[row])
+                a = np.array(nodes[row])
 
                 # Calcolo la distanza dal node a a tutti gli altri node
                 for column, node in enumerate(nodes):
                     # Uso le coordinate di un node e le trasformo in un array numpy
-                    b = numpy.array(node)
+                    b = np.array(node)
                     # Distanza euclidea
-                    eu_distances = numpy.linalg.norm(a - b)
+                    eu_distances = np.linalg.norm(a - b)
                     # Inserisco la distanza euclidea nella matrice o infinito se siamo sulla diagonale principale
                     item[column] = int(eu_distances) if int(eu_distances) > 0 else sys.maxsize
 
