@@ -3,17 +3,17 @@ import time
 import sys
 import numpy as np
 from copy import copy, deepcopy
+from best_tour import sp70
 
 
 class Tsp:
     # problem_name = 'berlin52'
     # problem_name = 'a280'
     # problem_name = 'pr1002'
-
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
-    # problem_name = 'st70'
+    problem_name = 'st70'
     # problem_name = 'bier127'
     # problem_name = 'ch130'
 
@@ -24,12 +24,16 @@ class Tsp:
         # Creo la matrice che rappresenta il problema
         self.matrix = Utility().create_matrix(self.problem_name)
         # Utility.print_matrix(self.matrix)
+        # print self.matrix[0][63]
 
         # Costruisco la soluzione iniziale
         route = self.initial_solution(deepcopy(self.matrix))
 
         # Percorso e costo iniziale
         print(route, self.cost(route))
+
+        # TODO Dovrebbe fare 675
+        print(map(lambda x: x-1, sp70), self.cost(map(lambda x: x-1, sp70)))
 
         # print(self.test_two_opt_neighborhood(route))
 
@@ -50,6 +54,8 @@ class Tsp:
         :param route:
         :return:
         """
+        # print np.roll(route, 1)
+        # print self.matrix[np.roll(route, 1), route]
         return self.matrix[np.roll(route, 1), route].sum()
 
     def two_opt_neighborhood(self, route):
@@ -77,8 +83,8 @@ class Tsp:
 
                     # print (route[i], route[i + 1]), (route[j], route[j + 1])
 
-                    reverse = route[i + 1:j + 2]
-                    new_route = route[:i + 1] + reverse[::-1] + route[j + 2:]
+                    reverse = route[i + 1:j + 1]
+                    new_route = route[:i + 1] + reverse[::-1] + route[j + 1:]
                     # print new_route[:len(new_route) - 1]
                     # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo
                     new_route_cost = self.cost(new_route[:len(new_route) - 1])
@@ -91,7 +97,7 @@ class Tsp:
 
             route = best_route
 
-        print("Numero di iterazioni: ", count)
+        print("Numero di intorni visitati: ", count)
         return route, best_cost
 
     @staticmethod
@@ -110,9 +116,9 @@ class Tsp:
         for i in range(0, len(route)):
             for j in range(i + 2, len(route) - 1):
                 print (route[i], route[i + 1]), (route[j], route[j + 1])
-                reverse = route[i + 1:j + 2]
+                reverse = route[i + 1:j + 1]
                 # print reverse
-                print route[:i + 1] + reverse[::-1] + route[j + 2:]
+                print route[:i + 1] + reverse[::-1] + route[j + 1:]
 
     @staticmethod
     def initial_solution(matrix):
