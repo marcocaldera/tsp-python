@@ -24,7 +24,7 @@ class Utility:
             # print len(nodes)
             matrix = np.array([
                 [0 for i in range(len(nodes))] for j in range(len(nodes))
-            ])
+            ], dtype=np.int64)
             # print len(matrix[0])
             # print matrix[0]
 

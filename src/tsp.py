@@ -7,13 +7,13 @@ from resources import sp70, toy_problem
 
 
 class Tsp:
-    # problem_name = 'berlin52'
+    problem_name = 'berlin52'
     # problem_name = 'a280'
     # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
-    problem_name = 'st70'
+    # problem_name = 'st70'
     # problem_name = 'bier127'
     # problem_name = 'ch130' # TODO 2-opt da come soluzione migliore -infinito
 
@@ -35,7 +35,7 @@ class Tsp:
 
         # TODO Dovrebbe fare 675
         # Test dell'optimal tour di sp70 (fornito dalla libreria)
-        print(sp70, self.cost(sp70))
+        # print(sp70, self.cost(sp70))
 
         # print(self.test_two_opt_neighborhood(route))
 
@@ -114,14 +114,14 @@ class Tsp:
         route = [1, 2, 3, 4, 5, 6]
         # route = [1, 2, 3, 4]
         # route = [1, 2, 3, 4, 5, 6]
-        print route
+        print (route)
 
         for i in range(0, len(route)):
             for j in range(i + 2, len(route) - 1):
                 print (route[i], route[i + 1]), (route[j], route[j + 1])
                 reverse = route[i + 1:j + 1]
                 # print reverse
-                print route[:i + 1] + reverse[::-1] + route[j + 1:]
+                print (route[:i + 1] + reverse[::-1] + route[j + 1:])
 
     @staticmethod
     def initial_solution(matrix):
