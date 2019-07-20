@@ -3,16 +3,16 @@ import time
 import sys
 import numpy as np
 from copy import copy, deepcopy
-from resources import sp70, toy_problem
+from resources import sp70, toy_problem, pr76
 
 
 class Tsp:
-    problem_name = 'berlin52'
+    # problem_name = 'berlin52'
     # problem_name = 'a280'
     # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
-    # problem_name = 'pr76'
+    problem_name = 'pr76'
     # problem_name = 'st70'
     # problem_name = 'bier127'
     # problem_name = 'ch130' # TODO 2-opt da come soluzione migliore -infinito
@@ -36,6 +36,7 @@ class Tsp:
         # TODO Dovrebbe fare 675
         # Test dell'optimal tour di sp70 (fornito dalla libreria)
         # print(sp70, self.cost(sp70))
+        print(pr76, self.cost(pr76))
 
         # print(self.test_two_opt_neighborhood(route))
 

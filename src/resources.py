@@ -16,12 +16,24 @@ sp70 = map(lambda x: x - 1,
            )
 
 """
+
+"""
+pr76 = map(lambda x: x - 1,
+           [1, 76, 75, 2, 3, 4, 5, 6, 7, 8, 9,
+            10, 11, 12, 13, 14, 74, 15, 16, 17, 18, 37, 36, 38, 39, 40, 34, 35, 33, 32, 29, 30, 31, 19,
+            20, 26, 27, 28, 43,
+            42, 54, 53, 52, 55, 56, 57, 58, 59, 60, 41, 61, 62, 63, 64, 73, 72, 71, 65, 66, 51, 49, 50,
+            67, 70, 68, 69, 47,
+            48, 44, 45, 46, 24, 25, 21, 22, 23,
+            ])
+
+"""
 Link:
 https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
 
 Minimal tour length: 19
 
-Hamiltonian cycle: 0 2 1 4 3
+Hamiltonian cycle: 0 2 1 4 3    
 
 """
 toy_problem = np.array([

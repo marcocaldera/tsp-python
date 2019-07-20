@@ -24,7 +24,7 @@ class Utility:
             # print len(nodes)
             matrix = np.array([
                 [0 for i in range(len(nodes))] for j in range(len(nodes))
-            ], dtype=np.int64)
+            ], dtype=np.float64)
             # print len(matrix[0])
             # print matrix[0]
 
@@ -41,7 +41,7 @@ class Utility:
                     # Distanza euclidea
                     eu_distances = np.linalg.norm(a - b)
                     # Inserisco la distanza euclidea nella matrice o infinito se siamo sulla diagonale principale
-                    item[column] = int(eu_distances) if int(eu_distances) > 0 else sys.maxsize
+                    item[column] = eu_distances if eu_distances > 0 else sys.maxsize
 
             # self.print_matrix(matrix)
             # print matrix[0]
