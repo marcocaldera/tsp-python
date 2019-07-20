@@ -12,10 +12,11 @@ class Tsp:
     # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
-    problem_name = 'pr76'
-    # problem_name = 'st70'
+    # problem_name = 'pr76'
+    problem_name = 'st70'
+
     # problem_name = 'bier127'
-    # problem_name = 'ch130' # TODO 2-opt da come soluzione migliore -infinito
+    # problem_name = 'ch130'  # TODO 2-opt da come soluzione migliore -infinito
 
     def __init__(self):
 
@@ -36,12 +37,12 @@ class Tsp:
         # TODO Dovrebbe fare 675
         # Test dell'optimal tour di sp70 (fornito dalla libreria)
         # print(sp70, self.cost(sp70))
-        print(pr76, self.cost(pr76))
+        # print(pr76, self.cost(pr76))
 
         # print(self.test_two_opt_neighborhood(route))
 
         # Percorso e costo dopo 2-opt
-        print(self.two_opt_neighborhood(route))
+        print(self.to_opt_neighborhood(route))
 
     def cost(self, route):
         """
@@ -71,11 +72,11 @@ class Tsp:
         best_cost = self.cost(route)
 
         # Aggiungo il nodo di start al fondo della lista
-        # route.append(route[0]) # TODO non e detto serva
+        route.append(route[0])  # TODO non e detto serva
 
         # Numero di volte in qui e stato calcolato l'intorno
         count = 0
-
+        print(len(route))
         # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
         improved = True
         while improved:
@@ -87,12 +88,13 @@ class Tsp:
                     # print (route[i], route[i + 1]), (route[j], route[j + 1])
 
                     reverse = route[i + 1:j + 1]
+                    print(reverse)
                     new_route = route[:i + 1] + reverse[::-1] + route[j + 1:]
                     # print new_route
 
                     # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo # TODO non e detto serva
-                    # new_route_cost = self.cost(new_route[:len(new_route) - 1])
-                    new_route_cost = self.cost(new_route)
+                    new_route_cost = self.cost(new_route[:len(new_route) - 1])
+                    # new_route_cost = self.cost(new_route)
 
                     if new_route_cost < best_cost:
                         best_route = new_route
@@ -104,6 +106,53 @@ class Tsp:
         print("Numero di intorni visitati: ", count)
         return route, best_cost
 
+    def to_opt_neighborhood(self, route):
+        """
+        Intorno 3-opt
+        :return:
+        """
+
+        best_route = route
+        best_cost = self.cost(route)
+
+        # Aggiungo il nodo di start al fondo della lista
+        route.append(route[0])  # TODO non e detto serva
+        print(len(route))
+        print(route)
+        # Numero di volte in qui e stato calcolato l'intorno
+        # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
+        improved = True
+        while improved:
+            improved = False
+            for count_1 in range(0, len(route)-1):
+                i = count_1 # first cut after i
+                X1 = route[i]
+                X2 = (route[i+1]) % (len(route))
+                for count_2 in range(count_1+1, len(route) - 3):
+                    j = (i+count_2) % len(route) # first cut after i
+                    Y1 = route[j]
+                    Y2 = (route[j+1]) % (len(route))
+                    for count_3 in range(count_2+1, len(route)-1):
+                        k = (i+count_3) % (len(route)) # first cut after i
+                        Z1 = route[k]
+                        Z2 = (route[k+1]) % (len(route))
+
+                        distanza1 = np.linalg.norm(X1 + Y1) + np.linalg.norm(X2 + Z1) + np.linalg.norm(Y2 + Z2)
+                        distanza2 = np.linalg.norm(X1 + Z1) + np.linalg.norm(Y2 + X2) + np.linalg.norm(Y1 + Z2)
+                        distanza3 = np.linalg.norm(X1 + Y2) + np.linalg.norm(Z1 + Y1) + np.linalg.norm(X2 + Z2)
+                        distanza4 = np.linalg.norm(X1 + Y2) + np.linalg.norm(Z1 + X2) + np.linalg.norm(Y1 + Z2)
+
+                        del_Length = np.linalg.norm(X1 + X2) + np.linalg.norm(Y1 + Y2) + np.linalg.norm(Z1 + Z2)
+
+                        result = del_Length - distanza1
+                        print("eeeee")
+                        print(distanza1)
+                        print(distanza2)
+                        print(distanza3)
+                        print(distanza4)
+
+        return route, best_cost
+
     @staticmethod
     def test_two_opt_neighborhood(route):
         """
@@ -112,17 +161,17 @@ class Tsp:
         """
 
         # TODO Ho bisogno dell'1 al fondo
-        route = [1, 2, 3, 4, 5, 6]
+        route = [1, 2, 3, 4, 5, 6, 1]
         # route = [1, 2, 3, 4]
         # route = [1, 2, 3, 4, 5, 6]
-        print (route)
+        print(route)
 
         for i in range(0, len(route)):
             for j in range(i + 2, len(route) - 1):
-                print (route[i], route[i + 1]), (route[j], route[j + 1])
+                print((route[i], route[i + 1]), (route[j], route[j + 1]))
                 reverse = route[i + 1:j + 1]
                 # print reverse
-                print (route[:i + 1] + reverse[::-1] + route[j + 1:])
+                print(route[:i + 1] + reverse[::-1] + route[j + 1:])
 
     @staticmethod
     def initial_solution(matrix):
@@ -182,4 +231,4 @@ if __name__ == '__main__':
     start = time.time()
     Tsp()
     print('-' * 50)
-    print('Execution time:', round(time.time() - start, 2), 'seconds')
+    print('Execution time:', round(time.time() - start, 3), 'seconds')
