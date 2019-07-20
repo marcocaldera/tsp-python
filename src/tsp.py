@@ -3,7 +3,7 @@ import time
 import sys
 import numpy as np
 from copy import copy, deepcopy
-from best_tour import sp70
+from resources import sp70, toy_problem
 
 
 class Tsp:
@@ -15,25 +15,27 @@ class Tsp:
     # problem_name = 'pr76'
     problem_name = 'st70'
     # problem_name = 'bier127'
-    # problem_name = 'ch130'
-
-    # TODO STAMPARE GRAFO
-    # https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro
+    # problem_name = 'ch130' # TODO 2-opt da come soluzione migliore -infinito
 
     def __init__(self):
+
         # Creo la matrice che rappresenta il problema
         self.matrix = Utility().create_matrix(self.problem_name)
+
+        # Toy problem
+        # self.matrix = toy_problem
+
         # Utility.print_matrix(self.matrix)
-        # print self.matrix[0][63]
 
         # Costruisco la soluzione iniziale
         route = self.initial_solution(deepcopy(self.matrix))
 
-        # Percorso e costo iniziale
+        # Stampa del Percorso e costo iniziale
         print(route, self.cost(route))
 
         # TODO Dovrebbe fare 675
-        print(map(lambda x: x-1, sp70), self.cost(map(lambda x: x-1, sp70)))
+        # Test dell'optimal tour di sp70 (fornito dalla libreria)
+        print(sp70, self.cost(sp70))
 
         # print(self.test_two_opt_neighborhood(route))
 
@@ -85,10 +87,11 @@ class Tsp:
 
                     reverse = route[i + 1:j + 1]
                     new_route = route[:i + 1] + reverse[::-1] + route[j + 1:]
-                    # print new_route[:len(new_route) - 1]
-                    # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo
-                    new_route_cost = self.cost(new_route[:len(new_route) - 1])
-                    # print new_route_cost
+                    # print new_route
+
+                    # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo # TODO non e detto serva
+                    # new_route_cost = self.cost(new_route[:len(new_route) - 1])
+                    new_route_cost = self.cost(new_route)
 
                     if new_route_cost < best_cost:
                         best_route = new_route

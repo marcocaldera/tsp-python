@@ -21,9 +21,12 @@ class Utility:
             # nodes = nodes[:6]
 
             # Creiamo una matrice n x n con n numero di nodi
+            # print len(nodes)
             matrix = np.array([
                 [0 for i in range(len(nodes))] for j in range(len(nodes))
             ])
+            # print len(matrix[0])
+            # print matrix[0]
 
             # Per ogni riga della matrice
             for row, item in enumerate(matrix):
