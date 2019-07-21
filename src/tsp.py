@@ -3,19 +3,20 @@ import time
 import sys
 import numpy as np
 from copy import copy, deepcopy
-from resources import sp70, toy_problem, pr76
+from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt
 
 
 class Tsp:
-    # problem_name = 'berlin52'
+    problem_name = 'berlin52'
+
     # problem_name = 'a280'
     # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
-    problem_name = 'pr76'
+    # problem_name = 'pr76'
     # problem_name = 'st70'
     # problem_name = 'bier127'
-    # problem_name = 'ch130' # TODO 2-opt da come soluzione migliore -infinito
+    # problem_name = 'ch130'
 
     def __init__(self):
 
@@ -33,10 +34,10 @@ class Tsp:
         # Stampa del Percorso e costo iniziale
         print(route, self.cost(route))
 
-        # TODO Dovrebbe fare 675
-        # Test dell'optimal tour di sp70 (fornito dalla libreria)
-        # print(sp70, self.cost(sp70))
-        print(pr76, self.cost(pr76))
+        # Test dell'optimal tour
+        # print(st70_opt, self.cost(st70_opt))
+        # print(pr76_opt, self.cost(pr76_opt))
+        print(berlin52_opt, self.cost(berlin52_opt))
 
         # print(self.test_two_opt_neighborhood(route))
 
@@ -59,7 +60,7 @@ class Tsp:
         """
         # print np.roll(route, 1)
         # print self.matrix[np.roll(route, 1), route]
-        return self.matrix[np.roll(route, 1), route].sum()
+        return int(self.matrix[np.roll(route, 1), route].sum())
 
     def two_opt_neighborhood(self, route):
         """
@@ -71,7 +72,7 @@ class Tsp:
         best_cost = self.cost(route)
 
         # Aggiungo il nodo di start al fondo della lista
-        # route.append(route[0]) # TODO non e detto serva
+        route.append(route[0])  # TODO non e detto serva
 
         # Numero di volte in qui e stato calcolato l'intorno
         count = 0
@@ -91,8 +92,8 @@ class Tsp:
                     # print new_route
 
                     # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo # TODO non e detto serva
-                    # new_route_cost = self.cost(new_route[:len(new_route) - 1])
-                    new_route_cost = self.cost(new_route)
+                    new_route_cost = self.cost(new_route[:len(new_route) - 1])
+                    # new_route_cost = self.cost(new_route)
 
                     if new_route_cost < best_cost:
                         best_route = new_route
@@ -102,7 +103,7 @@ class Tsp:
             route = best_route
 
         print("Numero di intorni visitati: ", count)
-        return route, best_cost
+        return route[:len(route) - 1], best_cost
 
     @staticmethod
     def test_two_opt_neighborhood(route):
@@ -112,7 +113,7 @@ class Tsp:
         """
 
         # TODO Ho bisogno dell'1 al fondo
-        route = [1, 2, 3, 4, 5, 6]
+        route = [1, 2, 3, 4, 5, 6, 1]
         # route = [1, 2, 3, 4]
         # route = [1, 2, 3, 4, 5, 6]
         print (route)
@@ -120,8 +121,12 @@ class Tsp:
         for i in range(0, len(route)):
             for j in range(i + 2, len(route) - 1):
                 print (route[i], route[i + 1]), (route[j], route[j + 1])
+
+                # Percorso da invertire
                 reverse = route[i + 1:j + 1]
                 # print reverse
+
+                # Con ::-1 inverto la lista
                 print (route[:i + 1] + reverse[::-1] + route[j + 1:])
 
     @staticmethod
