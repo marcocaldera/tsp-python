@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import sys
 import time
+import math
 
 
 class Utility:
@@ -18,13 +19,13 @@ class Utility:
                 nodes.append([float(row[1]), float(row[2])])
 
             # TODO Scommentare per ridurre la dimensione del problema
-            # nodes = nodes[:6]
+            # nodes = nodes[:5]
 
             # Creiamo una matrice n x n con n numero di nodi
             # print len(nodes)
             matrix = np.array([
                 [0 for i in range(len(nodes))] for j in range(len(nodes))
-            ], dtype=np.float64)
+            ], dtype=np.longdouble)
             # print len(matrix[0])
             # print matrix[0]
 
@@ -39,7 +40,10 @@ class Utility:
                     # Uso le coordinate di un node e le trasformo in un array numpy
                     b = np.array(node)
                     # Distanza euclidea
-                    eu_distances = np.linalg.norm(a - b)
+                    # eu_distances = np.linalg.norm(a - b)
+
+                    eu_distances = math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
+
                     # Inserisco la distanza euclidea nella matrice o infinito se siamo sulla diagonale principale
                     item[column] = eu_distances if eu_distances > 0 else sys.maxsize
 

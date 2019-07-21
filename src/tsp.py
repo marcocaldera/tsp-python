@@ -3,18 +3,19 @@ import time
 import sys
 import numpy as np
 from copy import copy, deepcopy
-from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt
+import operator
+from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt, kroA100_opt
 
 
 class Tsp:
-    problem_name = 'berlin52'
-
+    # problem_name = 'berlin52'
     # problem_name = 'a280'
     # problem_name = 'pr1002'
     # problem_name = 'kroA100'
     # problem_name = 'kroB200'
     # problem_name = 'pr76'
-    # problem_name = 'st70'
+    problem_name = 'st70'
+
     # problem_name = 'bier127'
     # problem_name = 'ch130'
 
@@ -35,14 +36,32 @@ class Tsp:
         print(route, self.cost(route))
 
         # Test dell'optimal tour
-        # print(st70_opt, self.cost(st70_opt))
+        print("Ottimo:")
+        print(st70_opt, self.cost(st70_opt))
         # print(pr76_opt, self.cost(pr76_opt))
-        print(berlin52_opt, self.cost(berlin52_opt))
-
-        # print(self.test_two_opt_neighborhood(route))
+        # print(kroA100_opt, self.cost(kroA100_opt))
+        # print(berlin52_opt, self.cost(berlin52_opt))
 
         # Percorso e costo dopo 2-opt
-        print(self.two_opt_neighborhood(route))
+        # print(self.test_two_opt_neighborhood(route))
+
+        route, cost = self.two_opt_neighborhood(route)
+        print(route, cost)
+
+        # Percorso e costo dopo 3-opt
+        # print(self.test_three_opt_neighborhood(route))
+
+        route, cost = self.three_opt_neighborhood(route)
+        print(route, cost)
+
+        # route, cost = self.two_opt_neighborhood(route)
+        # print(route, cost)
+        #
+        # route, cost = self.three_opt_neighborhood(route)
+        # print(route, cost)
+        #
+        # route, cost = self.two_opt_neighborhood(route)
+        # print(route, cost)
 
     def cost(self, route):
         """
@@ -60,6 +79,10 @@ class Tsp:
         """
         # print np.roll(route, 1)
         # print self.matrix[np.roll(route, 1), route]
+        # print self.matrix[1][0]
+        # return self.matrix[np.roll(route, 1)][route].sum()
+        np.set_printoptions(precision=24)
+        # print self.matrix[np.roll(route, 1), route]
         return int(self.matrix[np.roll(route, 1), route].sum())
 
     def two_opt_neighborhood(self, route):
@@ -72,11 +95,10 @@ class Tsp:
         best_cost = self.cost(route)
 
         # Aggiungo il nodo di start al fondo della lista
-        route.append(route[0])  # TODO non e detto serva
+        route.append(route[0])
 
         # Numero di volte in qui e stato calcolato l'intorno
         count = 0
-
         # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
         improved = True
         while improved:
@@ -87,11 +109,17 @@ class Tsp:
 
                     # print (route[i], route[i + 1]), (route[j], route[j + 1])
 
+                    """
+                    In list[first:last], last is not included.
+                    The 10th element is ls[9], in ls[0:10] there isn't ls[10]
+                    """
+
                     reverse = route[i + 1:j + 1]
+                    # print(reverse)
                     new_route = route[:i + 1] + reverse[::-1] + route[j + 1:]
                     # print new_route
 
-                    # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo # TODO non e detto serva
+                    # Tolto l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo
                     new_route_cost = self.cost(new_route[:len(new_route) - 1])
                     # new_route_cost = self.cost(new_route)
 
@@ -102,7 +130,80 @@ class Tsp:
 
             route = best_route
 
-        print("Numero di intorni visitati: ", count)
+        print("Numero di intorni 2-opt visitati: ", count)
+        return route[:len(route) - 1], best_cost
+
+    def three_opt_neighborhood(self, route):
+        """
+        Intorno 3-opt
+        :return:
+        """
+
+        best_route = route
+        best_cost = self.cost(route)
+
+        # Aggiungo il nodo di start al fondo della lista
+        route.append(route[0])
+
+        # Numero di volte in qui e stato calcolato l'intorno
+        count = 0
+        improved = True
+        while improved:
+            count += 1
+            improved = False
+            for i in range(len(route)):
+                for j in range(i + 2, len(route) - 1):
+                    for k in range(j + 2, len(route) - 1):
+
+                        possibility = []
+
+                        """
+                        CASO 4 
+                        """
+                        reverse_path_1 = route[i + 1:j + 1]
+                        reverse_path_2 = route[j + 1:k + 1]
+                        new_route = route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:]
+                        possibility.append([new_route, self.cost(new_route[:len(new_route) - 1])])
+
+                        """
+                        CASO 5
+                        """
+                        reverse_path = route[j + 1:k + 1]
+                        new_route = route[:i + 1] + reverse_path[::-1] + route[i + 1:j + 1] + route[k + 1:]
+                        possibility.append([new_route, self.cost(new_route[:len(new_route) - 1])])
+
+                        """
+                        CASO 6 
+                        """
+                        reverse_path = route[i + 1:j + 1]
+                        new_route = route[:i + 1] + route[j + 1:k + 1] + reverse_path[::-1] + route[k + 1:]
+                        possibility.append([new_route, self.cost(new_route[:len(new_route) - 1])])
+
+                        """
+                        CASO 7 
+                        """
+                        new_route = route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:]
+                        possibility.append([new_route, self.cost(new_route[:len(new_route) - 1])])
+
+                        best_option = min(possibility, key=lambda e: e[1])
+                        new_route = best_option[0]
+                        new_route_cost = best_option[1]
+
+                        # reverse = route[j + 1:k + 1]
+                        # new_route = route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:]
+                        #
+                        # # Tolgo l'ultimo elemento (duplicato dell start node) cosi da calcolare il costo
+                        # new_route_cost = self.cost(new_route[:len(new_route) - 1])
+                        # # new_route_cost = self.cost(new_route)
+
+                        if new_route_cost < best_cost:
+                            best_route = new_route
+                            best_cost = new_route_cost
+                            improved = True
+
+            route = best_route
+
+        print("Numero di intorni 3-opt visitati: ", count)
         return route[:len(route) - 1], best_cost
 
     @staticmethod
@@ -114,13 +215,11 @@ class Tsp:
 
         # TODO Ho bisogno dell'1 al fondo
         route = [1, 2, 3, 4, 5, 6, 1]
-        # route = [1, 2, 3, 4]
-        # route = [1, 2, 3, 4, 5, 6]
-        print (route)
+        print(route)
 
         for i in range(0, len(route)):
             for j in range(i + 2, len(route) - 1):
-                print (route[i], route[i + 1]), (route[j], route[j + 1])
+                print((route[i], route[i + 1]), (route[j], route[j + 1]))
 
                 # Percorso da invertire
                 reverse = route[i + 1:j + 1]
@@ -128,6 +227,51 @@ class Tsp:
 
                 # Con ::-1 inverto la lista
                 print (route[:i + 1] + reverse[::-1] + route[j + 1:])
+
+    @staticmethod
+    def test_three_opt_neighborhood(route):
+        """
+        Intorno 3-opt
+        :return:
+        """
+
+        # TODO Ho bisogno dell'1 al fondo
+        route = [1, 2, 3, 4, 5, 6, 1]
+        print(route)
+
+        for i in range(0, len(route)):
+            for j in range(i + 2, len(route) - 1):
+                for k in range(j + 2, len(route) - 1):
+                    print (route[i], route[i + 1]), (route[j], route[j + 1]), (route[k], route[k + 1])
+
+                    # print "Test: ", route[:i+1]
+                    # print "Test: ", route[j+1:k+1]
+                    # print "Test: ", route[i+2:j+1]
+                    # print "Test: ", route[k+1:]
+
+                    """
+                    CASO 4 
+                    """
+                    reverse_path_1 = route[i + 1:j + 1]
+                    reverse_path_2 = route[j + 1:k + 1]
+                    print route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:]
+
+                    """
+                    CASO 5
+                    """
+                    reverse = route[j + 1:k + 1]
+                    print route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:]
+
+                    """
+                    CASO 6 
+                    """
+                    reverse_path_1 = route[i + 1:j + 1]
+                    print route[:i + 1] + route[j + 1:k + 1] + reverse_path_1[::-1] + route[k + 1:]
+
+                    """
+                    CASO 7 
+                    """
+                    print route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:]
 
     @staticmethod
     def initial_solution(matrix):
@@ -187,4 +331,4 @@ if __name__ == '__main__':
     start = time.time()
     Tsp()
     print('-' * 50)
-    print('Execution time:', round(time.time() - start, 2), 'seconds')
+    print('Execution time:', round(time.time() - start, 3), 'seconds')
