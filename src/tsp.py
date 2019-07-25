@@ -4,19 +4,17 @@ import sys
 import numpy as np
 from copy import copy, deepcopy
 import operator
-from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt, kroA100_opt
+from random import shuffle
+from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt, kroA100_opt, eil101_opt
 
 
 class Tsp:
     # problem_name = 'berlin52'
-    # problem_name = 'a280'
-    # problem_name = 'pr1002'
     # problem_name = 'kroA100'
-    # problem_name = 'kroB200'
     problem_name = 'pr76'
+
     # problem_name = 'st70'
-    # problem_name = 'bier127'
-    # problem_name = 'ch130'
+    # problem_name = 'eil101'
 
     def __init__(self):
 
@@ -27,40 +25,45 @@ class Tsp:
         """
         Costruisco la soluzione iniziale
         """
-        route = Utility().nearest_neighbor(deepcopy(self.matrix))
+        # route = self.nearest_neighbor(deepcopy(self.matrix))
+        # route = self.nearest_neighbor_evolution(deepcopy(self.matrix))
+        # route = self.nearest_neighbor_random(deepcopy(self.matrix))
 
         # Stampa del Percorso e costo iniziale
-        print(route, self.cost(route))
+        # print(route, self.cost(route))
         # Utility.create_plot(self.problem_name, route)
 
         """
         Tour ottimi
         """
-        print("Ottimo:")
+        # print("Ottimo:")
         # print(st70_opt, self.cost(st70_opt))
         # Utility.create_plot("st70", st70_opt)
-        print(pr76_opt, self.cost(pr76_opt))
+        # print(pr76_opt, self.cost(pr76_opt))
         # Utility.create_plot("pr76", pr76_opt)
+        # print(eil101_opt, self.cost(eil101_opt))
+        # Utility.create_plot("eil101", eil101_opt)
         # print(kroA100_opt, self.cost(kroA100_opt))
         # print(berlin52_opt, self.cost(berlin52_opt))
+        # Utility.create_plot("berlin52", berlin52_opt)
 
         """
         2-opt
         Percorso e costo
         """
-        # print(self.test_two_opt_neighborhood(route))
+        print(Utility().test_two_opt_neighborhood())
 
-        route, cost = self.two_opt_neighborhood(route)
-        print(route, cost)
+        # route, cost = self.two_opt_neighborhood(route)
+        # print(route, cost)
 
         """
         3-opt
         Percorso e costo
         """
-        # print(self.test_three_opt_neighborhood(route))
+        # print(Utility().test_three_opt_neighborhood())
 
-        route, cost = self.three_opt_neighborhood(route)
-        print(route, cost)
+        # route, cost = self.three_opt_neighborhood(route)
+        # print(route, cost)
 
         # Utility.create_plot(self.problem_name, route)
 
@@ -78,13 +81,158 @@ class Tsp:
         :param route:
         :return:
         """
-        # print np.roll(route, 1)
-        # print self.matrix[np.roll(route, 1), route]
-        # print self.matrix[1][0]
-        # return self.matrix[np.roll(route, 1)][route].sum()
-        # np.set_printoptions(precision=24)
-        # print self.matrix[np.roll(route, 1), route]
         return int(self.matrix[np.roll(route, 1), route].sum())
+
+    @staticmethod
+    def nearest_neighbor_evolution(matrix):
+        """
+        Soluzione iniziale di tipo: Nearest Neighbor
+        :param matrix:
+        :return:
+        """
+
+        best_solution = sys.maxsize
+        best_route = []
+        original_matrix = matrix
+
+        for node_index, line in enumerate(matrix):
+            # Funzione obiettivo
+            solution = 0
+
+            # Nodo di partenza
+            start_node = node_index
+
+            # Il current node viene inizializzato al nodo di partenza
+            current_node = start_node
+
+            # Ciclo hamiltoniamo (cammino)
+            visited_node = []
+
+            matrix = deepcopy(original_matrix)
+
+            # Per ogni nodo
+            for idx in range(len(matrix)):
+
+                # Prelevo la riga contenente le distanze del nodo che sto valutando
+                row = matrix[current_node]
+
+                # Metto ad infinito le colonne relative ai nodi gia visitati in modo che non possano essere piu considerati
+                for v_node in visited_node:
+                    row[v_node] = sys.maxsize
+
+                # Se sto visitando l'ultimo nodo
+                if len(matrix) - 1 == len(visited_node):
+                    solution += matrix[start_node][current_node]
+                    visited_node.append(current_node)  # Aggiungo l'ultimo nodo
+                    # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
+                else:
+                    # Prelevo il valore piu piccolo della riga
+                    min_value = min(row)
+
+                    # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
+                    # min_index = matrix[current_node].index(min_value)
+                    min_index = np.where(matrix[current_node] == min_value)[0][0]
+
+                    solution += min_value
+
+                    # Aggiungo il nodo appena trattato alla lista dei nodi visitati
+                    visited_node.append(current_node)
+                    current_node = min_index
+
+            if solution < best_solution:
+                best_route = visited_node
+                best_solution = solution
+
+        # print best_route
+        # print best_solution
+        return best_route
+
+    def nearest_neighbor_random(self, matrix):
+        """
+        Soluzione iniziale di tipo: Nearest Neighbor
+        :param matrix:
+        :return:
+        """
+
+        route = range(len(matrix))
+        best_route = range(len(matrix))
+        best_solution = sys.maxsize
+
+        for index in range(50):
+
+            print route
+            shuffle(route)
+            print route
+            # solution = self.cost(route)
+
+            new_route, cost = self.two_opt_neighborhood(deepcopy(route))
+            print route
+            print new_route, cost
+            new_route, cost = self.three_opt_neighborhood(new_route)
+
+            print new_route, cost
+
+            # print solution
+            # print best_solution
+            if cost < best_solution:
+                best_route = new_route
+                best_solution = cost
+
+        print best_route, best_solution
+        return best_route
+
+    @staticmethod
+    def nearest_neighbor(matrix):
+        """
+        Soluzione iniziale di tipo: Nearest Neighbor
+        :param matrix:
+        :return:
+        """
+        # Funzione obiettivo
+        solution = 0
+
+        # Nodo di partenza
+        start_node = 0
+
+        # Il current node viene inizializzato al nodo di partenza
+        current_node = start_node
+
+        # Ciclo hamiltoniamo (cammino)
+        visited_node = []
+
+        # Per ogni nodo
+        for idx in range(len(matrix)):
+
+            # Prelevo la riga contenente le distanze del nodo che sto valutando
+            row = matrix[current_node]
+
+            # Metto ad infinito le colonne relative ai nodi gia visitati in modo che non possano essere piu considerati
+            for v_node in visited_node:
+                row[v_node] = sys.maxsize
+
+            # Se sto visitando l'ultimo nodo
+            if len(matrix) - 1 == len(visited_node):
+                solution += matrix[start_node][current_node]
+                visited_node.append(current_node)  # Aggiungo l'ultimo nodo
+                # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
+            else:
+                # Prelevo il valore piu piccolo della riga
+                min_value = min(row)
+
+                # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
+                # min_index = matrix[current_node].index(min_value)
+                min_index = np.where(matrix[current_node] == min_value)[0][0]
+
+                solution += min_value
+
+                # Aggiungo il nodo appena trattato alla lista dei nodi visitati
+                visited_node.append(current_node)
+                current_node = min_index
+
+        # print(solution)
+        # print(visited_node)
+
+        return visited_node
 
     def two_opt_neighborhood(self, route):
         """
@@ -105,7 +253,7 @@ class Tsp:
         while improved:
             count += 1
             improved = False
-            for i in range(0, len(route)):
+            for i in range(0, len(route) - 3):
                 for j in range(i + 2, len(route) - 1):
 
                     # print (route[i], route[i + 1]), (route[j], route[j + 1])
@@ -152,8 +300,8 @@ class Tsp:
         while improved:
             count += 1
             improved = False
-            for i in range(len(route)):
-                for j in range(i + 2, len(route) - 1):
+            for i in range(0, len(route) - 5):
+                for j in range(i + 2, len(route) - 3):
                     for k in range(j + 2, len(route) - 1):
 
                         possibility = []
@@ -199,73 +347,6 @@ class Tsp:
 
         print("Numero di intorni 3-opt visitati: ", count)
         return route[:len(route) - 1], best_cost
-
-    @staticmethod
-    def test_two_opt_neighborhood(route):
-        """
-        Intorno 2-opt
-        :return:
-        """
-
-        # TODO Ho bisogno dell'1 al fondo
-        route = [1, 2, 3, 4, 5, 6, 1]
-        print(route)
-
-        for i in range(0, len(route)):
-            for j in range(i + 2, len(route) - 1):
-                print((route[i], route[i + 1]), (route[j], route[j + 1]))
-
-                # Percorso da invertire
-                reverse = route[i + 1:j + 1]
-                # print reverse
-
-                # Con ::-1 inverto la lista
-                print (route[:i + 1] + reverse[::-1] + route[j + 1:])
-
-    @staticmethod
-    def test_three_opt_neighborhood(route):
-        """
-        Intorno 3-opt
-        :return:
-        """
-
-        # TODO Ho bisogno dell'1 al fondo
-        route = [1, 2, 3, 4, 5, 6, 1]
-        print(route)
-
-        for i in range(0, len(route)):
-            for j in range(i + 2, len(route) - 1):
-                for k in range(j + 2, len(route) - 1):
-                    print (route[i], route[i + 1]), (route[j], route[j + 1]), (route[k], route[k + 1])
-
-                    # print "Test: ", route[:i+1]
-                    # print "Test: ", route[j+1:k+1]
-                    # print "Test: ", route[i+2:j+1]
-                    # print "Test: ", route[k+1:]
-
-                    """
-                    CASO 4 
-                    """
-                    reverse_path_1 = route[i + 1:j + 1]
-                    reverse_path_2 = route[j + 1:k + 1]
-                    print route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:]
-
-                    """
-                    CASO 5
-                    """
-                    reverse = route[j + 1:k + 1]
-                    print route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:]
-
-                    """
-                    CASO 6 
-                    """
-                    reverse_path_1 = route[i + 1:j + 1]
-                    print route[:i + 1] + route[j + 1:k + 1] + reverse_path_1[::-1] + route[k + 1:]
-
-                    """
-                    CASO 7 
-                    """
-                    print route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:]
 
 
 if __name__ == '__main__':

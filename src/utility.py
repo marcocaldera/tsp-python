@@ -32,7 +32,7 @@ class Utility:
                 nodes.append([float(row[1]), float(row[2])])
 
             # TODO Scommentare per ridurre la dimensione del problema
-            # nodes = nodes[:5]
+            # nodes = nodes[:9]
 
             # Creiamo una matrice n x n con n numero di nodi
             # print len(nodes)
@@ -59,65 +59,12 @@ class Utility:
 
                     # Inserisco la distanza euclidea nella matrice o infinito se siamo sulla diagonale principale
                     # item[column] = eu_distances if eu_distances > 0 else sys.maxsize
-                    item[column] = int(eu_distances+0.5) if eu_distances > 0 else sys.maxsize
+                    item[column] = int(eu_distances + 0.5) if eu_distances > 0 else sys.maxsize
 
             # self.print_matrix(matrix)
             # print matrix[0]
 
             return matrix
-
-    @staticmethod
-    def nearest_neighbor(matrix):
-        """
-        Soluzione iniziale di tipo: Nearest Neighbor
-        :param matrix:
-        :return:
-        """
-        # Funzione obiettivo
-        solution = 0
-
-        # Nodo di partenza
-        start_node = 0
-
-        # Il current node viene inizializzato al nodo di partenza
-        current_node = start_node
-
-        # Ciclo hamiltoniamo (cammino)
-        visited_node = []
-
-        # Per ogni nodo
-        for idx in range(len(matrix)):
-
-            # Prelevo la riga contenente le distanze del nodo che sto valutando
-            row = matrix[current_node]
-
-            # Metto ad infinito le colonne relative ai nodi gia visitati in modo che non possano essere piu considerati
-            for v_node in visited_node:
-                row[v_node] = sys.maxsize
-
-            # Se sto visitando l'ultimo nodo
-            if len(matrix) - 1 == len(visited_node):
-                solution += matrix[start_node][current_node]
-                visited_node.append(current_node)  # Aggiungo l'ultimo nodo
-                # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
-            else:
-                # Prelevo il valore piu piccolo della riga
-                min_value = min(row)
-
-                # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
-                # min_index = matrix[current_node].index(min_value)
-                min_index = np.where(matrix[current_node] == min_value)[0][0]
-
-                solution += min_value
-
-                # Aggiungo il nodo appena trattato alla lista dei nodi visitati
-                visited_node.append(current_node)
-                current_node = min_index
-
-        # print(solution)
-        # print(visited_node)
-
-        return visited_node
 
     @staticmethod
     def print_matrix(matrix):
@@ -148,6 +95,73 @@ class Utility:
                 font_size=15, font_color="grey", font_weight="bold", width=2, edge_color="grey")
 
         plt.show()
+
+    @staticmethod
+    def test_two_opt_neighborhood():
+        """
+        Intorno 2-opt
+        :return:
+        """
+
+        # TODO Ho bisogno dell'1 al fondo
+        route = [1, 2, 3, 4, 5, 6, 1]
+        print(route)
+
+        for i in range(0, len(route) - 3):
+            for j in range(i + 2, len(route) - 1):
+                print((route[i], route[i + 1]), (route[j], route[j + 1]))
+
+                # Percorso da invertire
+                reverse = route[i + 1:j + 1]
+                # print reverse
+
+                # Con ::-1 inverto la lista
+                print (route[:i + 1] + reverse[::-1] + route[j + 1:])
+
+    @staticmethod
+    def test_three_opt_neighborhood():
+        """
+        Intorno 3-opt
+        :return:
+        """
+
+        # TODO Ho bisogno dell'1 al fondo
+        route = [1, 2, 3, 4, 5, 6, 1]
+        print(route)
+
+        for i in range(0, len(route) - 5):
+            for j in range(i + 2, len(route) - 3):
+                for k in range(j + 2, len(route) - 1):
+                    print (route[i], route[i + 1]), (route[j], route[j + 1]), (route[k], route[k + 1])
+
+                    # print "Test: ", route[:i+1]
+                    # print "Test: ", route[j+1:k+1]
+                    # print "Test: ", route[i+2:j+1]
+                    # print "Test: ", route[k+1:]
+
+                    """
+                    CASO 4 
+                    """
+                    reverse_path_1 = route[i + 1:j + 1]
+                    reverse_path_2 = route[j + 1:k + 1]
+                    print route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:]
+
+                    """
+                    CASO 5
+                    """
+                    reverse = route[j + 1:k + 1]
+                    print route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:]
+
+                    """
+                    CASO 6 
+                    """
+                    reverse_path_1 = route[i + 1:j + 1]
+                    print route[:i + 1] + route[j + 1:k + 1] + reverse_path_1[::-1] + route[k + 1:]
+
+                    """
+                    CASO 7 
+                    """
+                    print route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:]
 
 
 if __name__ == '__main__':
