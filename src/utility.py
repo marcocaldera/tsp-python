@@ -144,24 +144,24 @@ class Utility:
                     """
                     reverse_path_1 = route[i + 1:j + 1]
                     reverse_path_2 = route[j + 1:k + 1]
-                    print route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:]
+                    print (route[:i + 1] + reverse_path_1[::-1] + reverse_path_2[::-1] + route[k + 1:])
 
                     """
                     CASO 5
                     """
                     reverse = route[j + 1:k + 1]
-                    print route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:]
+                    print (route[:i + 1] + reverse[::-1] + route[i + 1:j + 1] + route[k + 1:])
 
                     """
                     CASO 6 
                     """
                     reverse_path_1 = route[i + 1:j + 1]
-                    print route[:i + 1] + route[j + 1:k + 1] + reverse_path_1[::-1] + route[k + 1:]
+                    print (route[:i + 1] + route[j + 1:k + 1] + reverse_path_1[::-1] + route[k + 1:])
 
                     """
                     CASO 7 
                     """
-                    print route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:]
+                    print (route[:i + 1] + route[j + 1:k + 1] + route[i + 1:j + 1] + route[k + 1:])
 
 
 if __name__ == '__main__':
