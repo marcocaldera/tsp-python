@@ -26,11 +26,11 @@ class Tsp:
         Costruisco la soluzione iniziale
         """
         # route = self.nearest_neighbor(deepcopy(self.matrix))
-        # route = self.nearest_neighbor_v2(deepcopy(self.matrix))
-        route = self.nearest_neighbor_random(deepcopy(self.matrix))
+        route = self.nearest_neighbor_v2(deepcopy(self.matrix))
+        # route = self.nearest_neighbor_random(deepcopy(self.matrix))
 
         # Stampa del Percorso e costo iniziale
-        # print(route, self.cost(route))
+        print(route, self.cost(route))
         # Utility.create_plot(self.problem_name, route)
 
         """
@@ -51,15 +51,15 @@ class Tsp:
         2-opt
         Percorso e costo
         """
-        # route, cost = self.two_opt_neighborhood(route)
-        # print(route, cost)
+        route, cost = self.two_opt_neighborhood(route)
+        print(route, cost)
 
         """
         3-opt
         Percorso e costo
         """
-        # route, cost = self.three_opt_neighborhood(route)
-        # print(route, cost)
+        route, cost = self.three_opt_neighborhood(route)
+        print(route, cost)
 
         # Utility.create_plot(self.problem_name, route)
 
@@ -76,16 +76,68 @@ class Tsp:
         In questo modo se ho una route [0,2,3], grazie ad np.roll
         vado a sommare gli elementi nella matrice in [[3,0,2][0,2,3]].sum()
 
-        :param matrix:
         :param route:
         :return:
         """
         return int(self.matrix[np.roll(route, 1), route].sum())
 
     @staticmethod
-    def nearest_neighbor_v2(matrix):
+    def nearest_neighbor(matrix):
         """
         Soluzione iniziale di tipo: Nearest Neighbor
+        :param matrix:
+        :return:
+        """
+        # Funzione obiettivo
+        solution = 0
+
+        # Nodo di partenza
+        start_node = 0
+
+        # Il current node viene inizializzato al nodo di partenza
+        current_node = start_node
+
+        # Ciclo hamiltoniamo (cammino)
+        visited_node = []
+
+        # Per ogni nodo
+        for idx in range(len(matrix)):
+
+            # Prelevo la riga contenente le distanze del nodo che sto valutando
+            row = matrix[current_node]
+
+            # Metto ad infinito le colonne relative ai nodi gia visitati in modo che non possano essere piu considerati
+            for v_node in visited_node:
+                row[v_node] = sys.maxsize
+
+            # Se sto visitando l'ultimo nodo
+            if len(matrix) - 1 == len(visited_node):
+                solution += matrix[start_node][current_node]
+                visited_node.append(current_node)  # Aggiungo l'ultimo nodo
+                # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
+            else:
+                # Prelevo il valore piu piccolo della riga
+                min_value = min(row)
+
+                # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
+                # min_index = matrix[current_node].index(min_value)
+                min_index = np.where(matrix[current_node] == min_value)[0][0]
+
+                solution += min_value
+
+                # Aggiungo il nodo appena trattato alla lista dei nodi visitati
+                visited_node.append(current_node)
+                current_node = min_index
+
+        # print(solution)
+        # print(visited_node)
+
+        return visited_node
+
+    @staticmethod
+    def nearest_neighbor_v2(matrix):
+        """
+        Soluzione iniziale di tipo: Nearest Neighbor v2
         :param matrix:
         :return:
         """
@@ -159,17 +211,17 @@ class Tsp:
 
         for index in range(1):
 
-            # print route
+            # print (route)
             shuffle(route)
-            # print route
+            # print (route)
             # solution = self.cost(route)
 
             new_route, cost = self.two_opt_neighborhood(deepcopy(route))
-            # print route
-            # print new_route, cost
+            # print (route)
+            # print (new_route, cost)
             new_route, cost = self.three_opt_neighborhood(new_route)
 
-            # print new_route, cost
+            # print (new_route, cost)
 
             # print solution
             # print best_solution
@@ -177,65 +229,13 @@ class Tsp:
                 best_route = new_route
                 best_solution = cost
 
-        print best_route, best_solution
+        print (best_route, best_solution)
         return best_route
-
-    @staticmethod
-    def nearest_neighbor(matrix):
-        """
-        Soluzione iniziale di tipo: Nearest Neighbor
-        :param matrix:
-        :return:
-        """
-        # Funzione obiettivo
-        solution = 0
-
-        # Nodo di partenza
-        start_node = 0
-
-        # Il current node viene inizializzato al nodo di partenza
-        current_node = start_node
-
-        # Ciclo hamiltoniamo (cammino)
-        visited_node = []
-
-        # Per ogni nodo
-        for idx in range(len(matrix)):
-
-            # Prelevo la riga contenente le distanze del nodo che sto valutando
-            row = matrix[current_node]
-
-            # Metto ad infinito le colonne relative ai nodi gia visitati in modo che non possano essere piu considerati
-            for v_node in visited_node:
-                row[v_node] = sys.maxsize
-
-            # Se sto visitando l'ultimo nodo
-            if len(matrix) - 1 == len(visited_node):
-                solution += matrix[start_node][current_node]
-                visited_node.append(current_node)  # Aggiungo l'ultimo nodo
-                # visited_node.append(start_node)  # Aggiungo lo start node, creando il ciclo
-            else:
-                # Prelevo il valore piu piccolo della riga
-                min_value = min(row)
-
-                # Prelevo il numero del nodo che fa riferimento al nodo con distanza piu piccola
-                # min_index = matrix[current_node].index(min_value)
-                min_index = np.where(matrix[current_node] == min_value)[0][0]
-
-                solution += min_value
-
-                # Aggiungo il nodo appena trattato alla lista dei nodi visitati
-                visited_node.append(current_node)
-                current_node = min_index
-
-        # print(solution)
-        # print(visited_node)
-
-        return visited_node
 
     def two_opt_neighborhood(self, route):
         """
         Intorno 2-opt
+        :param route:
         :return:
         """
 
@@ -284,6 +284,7 @@ class Tsp:
     def three_opt_neighborhood(self, route):
         """
         Intorno 3-opt
+        :param route:
         :return:
         """
 
