@@ -11,9 +11,8 @@ from resources import st70_opt, toy_problem, pr76_opt, berlin52_opt, kroA100_opt
 class Tsp:
     # problem_name = 'berlin52'
     # problem_name = 'kroA100'
-    # problem_name = 'pr76'
-    problem_name = 'st70'
-
+    problem_name = 'pr76'
+    # problem_name = 'st70'
     # problem_name = 'eil101'
 
     def __init__(self):
@@ -26,11 +25,11 @@ class Tsp:
         Costruisco la soluzione iniziale
         """
         # route = self.nearest_neighbor(deepcopy(self.matrix))
-        route = self.nearest_neighbor_v2(deepcopy(self.matrix))
+        # route = self.nearest_neighbor_evolution(deepcopy(self.matrix))
         # route = self.nearest_neighbor_random(deepcopy(self.matrix))
 
         # Stampa del Percorso e costo iniziale
-        print(route, self.cost(route))
+        # print(route, self.cost(route))
         # Utility.create_plot(self.problem_name, route)
 
         """
@@ -51,20 +50,21 @@ class Tsp:
         2-opt
         Percorso e costo
         """
-        route, cost = self.two_opt_neighborhood(route)
-        print(route, cost)
+        print(Utility().test_two_opt_neighborhood())
+
+        # route, cost = self.two_opt_neighborhood(route)
+        # print(route, cost)
 
         """
         3-opt
         Percorso e costo
         """
-        route, cost = self.three_opt_neighborhood(route)
-        print(route, cost)
+        # print(Utility().test_three_opt_neighborhood())
+
+        # route, cost = self.three_opt_neighborhood(route)
+        # print(route, cost)
 
         # Utility.create_plot(self.problem_name, route)
-
-        # print(Utility().test_two_opt_neighborhood())
-        # print(Utility().test_three_opt_neighborhood())
 
     def cost(self, route):
         """
@@ -135,9 +135,9 @@ class Tsp:
         return visited_node
 
     @staticmethod
-    def nearest_neighbor_v2(matrix):
+    def nearest_neighbor_evolution(matrix):
         """
-        Soluzione iniziale di tipo: Nearest Neighbor v2
+        Soluzione iniziale di tipo: Nearest Neighbor
         :param matrix:
         :return:
         """
@@ -209,19 +209,19 @@ class Tsp:
         best_route = range(len(matrix))
         best_solution = sys.maxsize
 
-        for index in range(1):
+        for index in range(50):
 
-            # print (route)
+            print (route)
             shuffle(route)
-            # print (route)
+            print (route)
             # solution = self.cost(route)
 
             new_route, cost = self.two_opt_neighborhood(deepcopy(route))
-            # print (route)
-            # print (new_route, cost)
+            print (route)
+            print (new_route, cost)
             new_route, cost = self.three_opt_neighborhood(new_route)
 
-            # print (new_route, cost)
+            print (new_route, cost)
 
             # print solution
             # print best_solution
@@ -248,10 +248,10 @@ class Tsp:
         # Numero di volte in qui e stato calcolato l'intorno
         count = 0
         # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
-        updated = True
-        while updated:
+        improved = True
+        while improved:
             count += 1
-            updated = False
+            improved = False
             for i in range(0, len(route) - 3):
                 for j in range(i + 2, len(route) - 1):
 
@@ -274,7 +274,7 @@ class Tsp:
                     if new_route_cost < best_cost:
                         best_route = new_route
                         best_cost = new_route_cost
-                        updated = True
+                        improved = True
 
             route = best_route
 
@@ -296,10 +296,10 @@ class Tsp:
 
         # Numero di volte in qui e stato calcolato l'intorno
         count = 0
-        updated = True
-        while updated:
+        improved = True
+        while improved:
             count += 1
-            updated = False
+            improved = False
             for i in range(0, len(route) - 5):
                 for j in range(i + 2, len(route) - 3):
                     for k in range(j + 2, len(route) - 1):
@@ -341,13 +341,12 @@ class Tsp:
                         if new_route_cost < best_cost:
                             best_route = new_route
                             best_cost = new_route_cost
-                            updated = True
+                            improved = True
 
             route = best_route
 
         print("Numero di intorni 3-opt visitati: ", count)
         return route[:len(route) - 1], best_cost
-
 
 if __name__ == '__main__':
     start = time.time()
