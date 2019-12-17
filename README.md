@@ -7,10 +7,10 @@ Implementation of the TSP problem in python
 - `prepare_resources` use this file in order to convert the `.tsp` file into a `.csv` file
 - `utility` contains a set of useful methods in order to develop the problem
 - `resources.py` contains a set of useful elements for the project (e.g., optimal tour of the problem)
-- `tsp.py` contains the implementation of the following algorithm: 
-* `nearest_neighbor`
-* `2-opt`
-* `3-opt`
+- `tsp.py` contains the implementation of the following algorithms: 
+  * `nearest_neighbor`
+  * `2-opt`
+  * `3-opt`
 
 ---
 
