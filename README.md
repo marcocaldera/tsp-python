@@ -19,6 +19,5 @@ Implementation of the TSP problem in python
 
 Example of st-70 problem after `nearest neighbour`:
 <img src="./images/myplot1.png"  width="500" height="500">
---
-Example of st-70 problem after `2-opt` and `3-opt`:
+Example of st-70 problem after `2-opt` and `3-opt`:\
 <img src="./images/myplot2.png"  width="500" height="500">
