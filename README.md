@@ -19,6 +19,6 @@ Implementation of the TSP problem in python
 
 
 Example of st-70 problem after `nearest neighbour`:
-![nn](./image/myplot1.png)
+![nn](./images/myplot1.png)
 Example of st-70 problem after `2-opt` and `3-opt`:
-![nn](./image/myplot2.png)
+![opt](./images/myplot2.png)
