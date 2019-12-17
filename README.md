@@ -12,7 +12,7 @@ Implementation of the TSP problem in python
   * `2-opt`
   * `3-opt`
 
-`TSP.pdf` contains a presentation of the project
+`TSP.pdf` contains the presentation of the project
 
 [Guide to print graph](https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro)
 
