@@ -13,8 +13,12 @@ Implementation of the TSP problem in python
   * `3-opt`
 
 ---
+`TSP.pdf` contains a report of the project
 
-##### Per stampare grafi:
-- https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro
+[Guide to print graph](https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro)
 
 
+Example of st-70 problem after `nearest neighbour`:
+![nn](./image/myplot1.png)
+Example of st-70 problem after `2-opt` and `3-opt`:
+![nn](./image/myplot2.png)
