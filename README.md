@@ -4,10 +4,13 @@ Implementation of the TSP problem in python
 
 ##### In the `src` package you can find the following classes:
 
-- `PrepareResources` use this file in order to conver the `.tsp` file into a `.csv` file
-- `Utility` che serve a contenere un insieme di metodi utili allo sviluppo del problema
-- `resources.py` contine un'insieme di risorse utili al progetto (e.g., tour ottimali, etc.)
-
+- `prepare_resources` use this file in order to convert the `.tsp` file into a `.csv` file
+- `utility` contains a set of useful methods in order to develop the problem
+- `resources.py` contains a set of useful elements for the project (e.g., optimal tour of the problem)
+- `tsp.py` contains the implementation of the following algorithm: 
+* `nearest_neighbor`
+* `2-opt`
+* `3-opt`
 
 ---
 
