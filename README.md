@@ -14,11 +14,10 @@ Implementation of the TSP problem in python
 
 ---
 `TSP.pdf` contains a report of the project
-
 [Guide to print graph](https://codereview.stackexchange.com/questions/208387/2-opt-algorithm-for-the-traveling-salesman-and-or-sro)
 
 
 Example of st-70 problem after `nearest neighbour`:
-![nn](./images/myplot1.png =200x200)
+<img src="./images/myplot1.png"  width="500" height="500">
 Example of st-70 problem after `2-opt` and `3-opt`:
-![opt](./images/myplot2.png)
+<img src="./images/myplot2.png"  width="500" height="500">
